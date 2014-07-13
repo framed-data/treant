@@ -13,21 +13,30 @@ Quickstart
 
 ```python
 import treant
+from treant import value
 
 t = treant.tree(
     ('/', [
         ('home', [
             ('jane', []),
-            ('john', [])]),
+            ('john', [
+                ('bin')])]),
         ('opt', [
             ('robots', [
                 ('bin', [])])])]))
 
+path = treant.find_path_ex(t, lambda n: value(n) == 'robots')
+# => [root_node>, <opt_node>, <robots_node>]
+
+path_values = [value(n) for n in path]
+# => ['/', 'opt', 'robots']
+
+node = treant.find_ex(t, lambda n: value(n) == 'jane')
+# => <jane_node>
+
+node = treant.find_ex(t, lambda n: value(n) == 'nonsense!')
+# => None
+
+node = treant.find_all(t, lambda n: value(n) == 'bin')
+# => [<john_bin_node>, <robots_bin_node>]
 ```
-
-Given such a data struture parsed into a tree, you can do stuff like:
-
-- Iterate through all the nodes / values in a tree in a specific order
-  (preorder, inorder, postorder) (forthcoming)
-- Find whether a specific node / value is in the tree
-- List all paths

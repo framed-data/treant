@@ -2,6 +2,10 @@ import treant
 from treant import mknode, node, value, children, get, assoc
 from treant import tree
 from treant import preorder, paths_preorder
+from treant import find_all_paths, find_all, find_path_ex, find_ex
+from treant import _pprint, pprint
+
+from nose.tools import eq_
 
 def test_mknode():
     bar = mknode('bar')
@@ -76,5 +80,194 @@ def test_get_absent():
 
 def test_paths_preorder():
     nodes = ['/', ['opt', 'framed', 'mcv']]
+
     t = tree(nodes)
-    assert False
+    root = get(t, ['/'])
+    opt = get(t, ['/', 'opt'])
+    framed = get(t, ['/', 'opt', 'framed'])
+    mcv = get(t, ['/', 'opt', 'mcv'])
+
+    paths = [p for p in paths_preorder(t)]
+
+    eq_(paths,
+        [[root],
+         [root, opt],
+         [root, opt, framed],
+         [root, opt, mcv]])
+
+def test__pprint():
+    nodes = ['/', ['opt', 'framed', 'mcv']]
+    t = tree(nodes)
+    lines = [l for l in _pprint(t)]
+
+    eq_(lines,
+        ["- / {}",
+         "  - opt {}",
+         "    - framed {}",
+         "    - mcv {}"])
+
+def test_find_all_paths_hit_leaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin = preorder(t)
+    ps = [p for p in find_all_paths(t, lambda n: value(n) == 'bin')]
+
+    eq_(ps,
+        [[root, opt, framed, framed_bin],
+         [root, opt, mcv, mcv_bin]])
+
+def test_find_all_paths_hit_nonleaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin = preorder(t)
+    ps = [p for p in find_all_paths(t, lambda n: value(n) == 'framed')]
+
+    eq_(ps, [[root, opt, framed]])
+
+def test_find_all_paths_miss():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin = preorder(t)
+    ps = [p for p in find_all_paths(t, lambda n: value(n) == 'nonsense!')]
+
+    eq_(ps, [])
+
+def test_find_all_hit_leaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin = preorder(t)
+    ns = [n for n in find_all(t, lambda n: value(n) == 'bin')]
+
+    eq_(ns, [framed_bin, mcv_bin])
+
+def test_find_all_hit_nonleaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin = preorder(t)
+    ns = [n for n in find_all(t, lambda n: value(n) == 'framed')]
+
+    eq_(ns, [framed])
+
+
+def test_find_all_miss():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin = preorder(t)
+    ns = [n for n in find_all(t, lambda n: value(n) == 'nonsense!')]
+
+    eq_(ns, [])
+
+def test_find_path_ex_hit_leaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin'),
+                        ('tests')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin, mcv_tests = preorder(t)
+    p = find_path_ex(t, lambda n: value(n) == 'tests')
+
+    eq_(p, [root, opt, mcv, mcv_tests])
+
+def test_find_path_ex_hit_nonleaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin'),
+                        ('tests')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin, mcv_tests = preorder(t)
+    p = find_path_ex(t, lambda n: value(n) == 'mcv')
+
+    eq_(p, [root, opt, mcv])
+
+def test_find_path_ex_miss_absent():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin'),
+                        ('tests')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin, mcv_tests = preorder(t)
+    n = find_path_ex(t, lambda n: value(n) == 'nonsense!')
+
+    eq_(n, None)
+
+def test_find_path_ex_miss_nonunique():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin'),
+                        ('tests')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin, mcv_tests = preorder(t)
+    n = find_path_ex(t, lambda n: value(n) == 'bin')
+
+    eq_(n, None)
+
+
+def test_find_ex_hit_leaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin'),
+                        ('tests')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin, mcv_tests = preorder(t)
+    n = find_ex(t, lambda n: value(n) == 'tests')
+
+    eq_(n, mcv_tests)
+
+def test_find_ex_hit_nonleaf():
+    nodes = ('/', [
+                ('opt', [
+                    ('framed', [
+                        ('bin')]),
+                    ('mcv', [
+                        ('bin'),
+                        ('tests')])])])
+    t = tree(nodes)
+    root, opt, framed, framed_bin, mcv, mcv_bin, mcv_tests = preorder(t)
+    n = find_ex(t, lambda n: value(n) == 'mcv')
+
+    eq_(n, mcv)

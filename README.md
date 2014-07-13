@@ -37,6 +37,10 @@ node = treant.find_ex(t, lambda n: value(n) == 'jane')
 node = treant.find_ex(t, lambda n: value(n) == 'nonsense!')
 # => None
 
+node = treant.find_ex(t, lambda n: value(n) == 'bin')
+# => None   # find_ex only returns a value if the match is unique
+
 node = treant.find_all(t, lambda n: value(n) == 'bin')
-# => [<john_bin_node>, <robots_bin_node>]
+# => [<john_bin_node>, <robots_bin_node>]  # find_all returns all matches
+
 ```

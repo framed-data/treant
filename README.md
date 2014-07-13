@@ -21,10 +21,13 @@ t = treant.tree(
             ('john', [])]),
         ('opt', [
             ('robots', [
-                ('bin, [])])])]))
+                ('bin', [])])])]))
 
 ```
 
 Given such a data struture parsed into a tree, you can do stuff like:
 
+- Iterate through all the nodes / values in a tree in a specific order
+  (preorder, inorder, postorder) (forthcoming)
+- Find whether a specific node / value is in the tree
 - List all paths

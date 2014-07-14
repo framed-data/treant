@@ -43,7 +43,7 @@ def assoc(d, k, v):
 def attrs(node):
     return node['attrs']
 
-def value(node):t
+def value(node):
     return node['value']
 
 def children(node):

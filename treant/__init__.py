@@ -8,16 +8,19 @@ def mknode(value, children=[], attrs={}):
             'attrs': attrs,
             'children': children}
 
-def n(value, *args):
+def n(node_in):
     """'Smart' tuple interpreter.  First argument is
     always interpreted as the node value, any additional
     arguments are interpreted by type; if it's a list,
     consider it a list of children, if a dict consider
     it a dict or args.  Last one wins if there's multiple."""
-    mknode_args = [value, [], {}]
+
+    node = (node_in,) if isinstance(node_in, basestring) else node_in
+
+    mknode_args = [node[0], [], {}]
     lookup = { list: 1, dict: 2}
 
-    for v in args:
+    for v in node[1:]:
         mknode_args[lookup[type(v)]] = v
 
     return mknode(*mknode_args)

@@ -37,6 +37,32 @@ def test_node_dict():
 def test_node_list():
     assert treant.node(['foo', 'bar', 'baz']) == treant.mknode('foo', ['bar', 'baz'])
 
+def test_n_one():
+    assert treant.n('foo') == treant.mknode('foo')
+
+def test_n_many_list():
+    bar = mknode('bar')
+    baz = mknode('baz')
+    assert treant.n('foo', [bar, baz]) == treant.mknode('foo', [bar, baz])
+
+def test_n_many_dict():
+    attrs = { 'bar': 40, 'baz': 60 }
+    assert treant.n('foo', attrs) == treant.mknode('foo', [], attrs)
+
+def test_n_many_list_dict_in_order():
+    bar = mknode('bar')
+    baz = mknode('baz')
+    children = [bar, baz]
+    attrs = { 'quux': 40, 'weee': 60 }
+    assert treant.n('foo', children, attrs) == treant.mknode('foo', children, attrs)
+
+def test_n_many_list_dict_out_of_order():
+    bar = mknode('bar')
+    baz = mknode('baz')
+    children = [bar, baz]
+    attrs = { 'quux': 40, 'weee': 60 }
+    assert treant.n('foo', attrs, children) == treant.mknode('foo', children, attrs)
+
 def test_assoc_new_node_takes_newvalue():
     n0 = treant.mknode('foo', ['bar', 'baz'])
 

@@ -3,12 +3,12 @@ treant
 
 Simple tree operations in Python
 
-![buildstatus](https://circleci.com/gh/framed-data/treant.png?circle-token=5547972ae8a78299424cfe0a98fd94167a7f2054)
-
 Trees data strutures are pervasive in computer science, even for the
 most practical tasks such as organizing files on a file system.
 Treant provides basic tree construction and operations in as simple a
 way as possible.
+
+[![PyPI version](https://badge.fury.io/py/treant.svg)](http://badge.fury.io/py/treant) ![buildstatus](https://circleci.com/gh/framed-data/treant.png?circle-token=5547972ae8a78299424cfe0a98fd94167a7f2054)
 
 Quickstart
 ----------

@@ -43,7 +43,7 @@ def assoc(d, k, v):
 def attrs(node):
     return node['attrs']
 
-def value(node):
+def value(node):t
     return node['value']
 
 def children(node):
@@ -51,9 +51,11 @@ def children(node):
 
 # tree constructor
 
-def tree(t):
-    n = node(t)
-    n['children'] = [tree(c) for c in children(n)]
+def tree(t, node_constructor=node):
+    n = node_constructor(t)
+    n['children'] = [tree(c, node_constructor=node_constructor)
+                     for c
+                     in children(n)]
     return n
 
 
